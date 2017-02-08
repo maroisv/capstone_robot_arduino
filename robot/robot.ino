@@ -1,10 +1,13 @@
 #include "Control.h"
+#include "Sensors.h"
 
 Control control(200);
+Sensors sensors;
 
 void setup(void)
 {
   control.initialize();
+  sensors.initialize();
   Serial.begin(9600);
   Serial.println("setup");
 }
@@ -30,6 +33,14 @@ void loop(void)
     case 'd'://Turn Right
     case 'D':
       control.right();
+      break;
+    case 't': // Temperature
+    case 'T':
+      Serial.println(sensors.getTemperature());
+      break;
+    case 'e':
+    case 'E':
+      Serial.println(sensors.getDistance(1));
       break;
     default:
       control.stop();
