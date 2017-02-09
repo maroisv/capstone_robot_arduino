@@ -42,6 +42,14 @@ void loop(void)
     case 'E':
       Serial.println(sensors.getDistance(1));
       break;
+    case 'g': // gas level
+    case 'G':
+      Serial.println(sensors.getGasLevel());
+      break;
+    case 'o': // sound level
+    case 'O':
+      Serial.println(sensors.getSoundLevel());
+      break;
     default:
       control.stop();
       break;

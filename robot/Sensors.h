@@ -11,9 +11,13 @@ class Sensors
   public:
     Sensors();
     void initialize();
-    float getDistance(int location);
-	  int getTemperature();
+    int getDistance(int location);
+	int getTemperature();
+	int getSoundLevel();
+	int getGasLevel();
   private:
+    int _pins_echo[];
+	int _pins_trig[];
 };
 
 #endif
