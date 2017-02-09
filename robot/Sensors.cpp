@@ -11,8 +11,8 @@
 #define read_to_mvolt 4.8828
 #define mvolt_to_cel 0.1
 
-int _pins_echo[3] = {2,2,2};
-int _pins_trig[3] = {3,3,3};
+const int Sensors::_pins_echo[3] = {2,2,2};
+const int Sensors::_pins_trig[3] = {3,3,3};
 
 Sensors::Sensors() {}
 

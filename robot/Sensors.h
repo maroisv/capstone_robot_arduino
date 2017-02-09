@@ -12,12 +12,12 @@ class Sensors
     Sensors();
     void initialize();
     int getDistance(int location);
-	int getTemperature();
-	int getSoundLevel();
-	int getGasLevel();
+	  int getTemperature();
+	  int getSoundLevel();
+	  int getGasLevel();
   private:
-    int _pins_echo[];
-	int _pins_trig[];
+    static const int _pins_echo[];
+	  static const int _pins_trig[];
 };
 
 #endif
