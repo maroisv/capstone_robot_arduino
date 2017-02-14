@@ -11,6 +11,7 @@
 #define read_to_mvolt 4.8828
 #define mvolt_to_cel 0.1
 
+// Left, center, right
 const int Sensors::_pins_echo[3] = {10,3,9};
 const int Sensors::_pins_trig[3] = {11,2,4};
 
