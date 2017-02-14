@@ -5,20 +5,22 @@
 #include "Arduino.h"
 #include "Sensors.h"
 
-#define a_pin_sound 4
-#define a_pin_temp 5
-#define a_pin_gas 3
+#define a_pin_sound 5
+#define a_pin_temp 3
+#define a_pin_gas 4
 #define read_to_mvolt 4.8828
 #define mvolt_to_cel 0.1
 
-const int Sensors::_pins_echo[3] = {2,2,2};
-const int Sensors::_pins_trig[3] = {3,3,3};
+const int Sensors::_pins_echo[3] = {10,3,9};
+const int Sensors::_pins_trig[3] = {11,2,4};
 
 Sensors::Sensors() {}
 
 void Sensors::initialize() {
-  pinMode(_pins_echo[1], INPUT);
-  pinMode(_pins_trig[1], OUTPUT);
+  for (int i = 0; i < 3; i++) {
+    pinMode(_pins_echo[i], INPUT);
+    pinMode(_pins_trig[i], OUTPUT);
+  }
 }
 
 // Return the temperature in celsius
@@ -48,6 +50,12 @@ int Sensors::getDistance(int location) {
   digitalWrite(_pins_trig[location], HIGH);
   delayMicroseconds(10);
   digitalWrite(_pins_trig[location], LOW);
-  
-  return (int) pulseIn(_pins_echo[location], HIGH) / 2 * 0.0344;
+
+  int pulse = pulseIn(_pins_echo[location], HIGH, 29070);
+
+  if (pulse == 0) {
+    return 500;
+  } else {
+    return (int) pulse / 2 * 0.0344;
+  }
 }
