@@ -16,6 +16,8 @@ class Control
 	  void left();
 	  void right();
     void stop();
+    void beep(int len);
+    void beepBeep(int period, int len);
   private:
     int _speed;
 };

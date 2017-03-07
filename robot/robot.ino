@@ -54,6 +54,11 @@ void loop(void)
       case 'O':
         Serial.println(sensors.getSoundLevel());
         break;
+      case 'b': // Beep for 5 seconds
+      case 'B':
+        control.beep(2000);
+        control.beepBeep(200,3000);
+        break;
       case 'u': // sound level
       case 'U':
         autonomous = true;
