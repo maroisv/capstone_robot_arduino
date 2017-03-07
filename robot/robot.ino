@@ -4,6 +4,7 @@
 Control control(200);
 Sensors sensors;
 boolean autonomous = false;
+int * obstacles = new int[3];
 
 void setup(void)
 {
@@ -70,8 +71,9 @@ void loop(void)
       control.forward();
     } 
     else {
-      control.right();
-      delay(500);
+      obstacles = sensors.getDistanceArray();
+      (obstacles[0] > obstacles[2]) ? control.left() : control.right();
+      delay(1000);
       control.stop();
     }
   }
