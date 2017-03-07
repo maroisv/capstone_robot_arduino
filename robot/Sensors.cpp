@@ -60,3 +60,12 @@ int Sensors::getDistance(int location) {
     return (int) pulse / 2 * 0.0344;
   }
 }
+
+int * Sensors::getDistanceArray() {
+  int * obstacles = new int[3];
+  for (int i = 0; i < 3; i++) {
+    obstacles[i] = getDistance(i);
+  }
+  return obstacles;
+}
+

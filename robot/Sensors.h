@@ -15,6 +15,7 @@ class Sensors
 	  int getTemperature();
 	  int getSoundLevel();
 	  int getGasLevel();
+    int * getDistanceArray();
   private:
     static const int _pins_echo[];
 	  static const int _pins_trig[];
