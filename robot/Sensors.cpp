@@ -5,9 +5,9 @@
 #include "Arduino.h"
 #include "Sensors.h"
 
-#define a_pin_sound 5
-#define a_pin_temp 3
-#define a_pin_gas 4
+#define a_pin_sound 4
+#define a_pin_temp 2
+#define a_pin_gas 3
 #define read_to_mvolt 4.8828
 #define mvolt_to_cel 0.1
 
