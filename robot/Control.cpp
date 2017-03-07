@@ -10,21 +10,30 @@
 #define pin_dir_1 8
 #define pin_dir_2 7
 
-#define pin_transducer 13
+#define pin_transducer 12
 #define microPeriod 800
 
 int _speed;
 
+/**
+ * Create the control object and set the desired speed.
+ */
 Control::Control(int speed) {
 	_speed = speed;
 }
 
+/**
+ * Initialize the control related pins.
+ */
 void Control::initialize(void) {
-  for(int i=5;i<=8;i++)
-    pinMode(i, OUTPUT);
+  pinMode(pin_dir_1, OUTPUT);
+  pinMode(pin_dir_2, OUTPUT);
   pinMode(pin_transducer, OUTPUT);
 }
 
+/**
+ * Move forward indefinitely.
+ */
 void Control::forward()
 {
   analogWrite(pin_speed_1,_speed);
@@ -34,6 +43,9 @@ void Control::forward()
   Serial.println("forward");
 }
 
+/**
+ * Move backward indefinitely.
+ */
 void Control::reverse()
 {
   analogWrite(pin_speed_1,_speed);
@@ -43,6 +55,9 @@ void Control::reverse()
   Serial.println("reverse");
 }
 
+/**
+ * Turn left indefinitely.
+ */
 void Control::left ()
 {
   analogWrite(pin_speed_1,_speed);
@@ -52,6 +67,9 @@ void Control::left ()
   Serial.println("left");
 }
 
+/**
+ * Turn right indefinitely.
+ */
 void Control::right ()
 {
   analogWrite(pin_speed_1,_speed);
@@ -61,6 +79,9 @@ void Control::right ()
   Serial.println("right");
 }
 
+/**
+ * Stop the motors.
+ */
 void Control::stop()
 {
   digitalWrite(pin_speed_1,LOW);

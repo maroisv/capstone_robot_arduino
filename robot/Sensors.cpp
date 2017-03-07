@@ -15,8 +15,10 @@
 const int Sensors::_pins_echo[3] = {10,3,9};
 const int Sensors::_pins_trig[3] = {11,2,4};
 
+// Create the Sensors object.
 Sensors::Sensors() {}
 
+// Initialize the pins related to the sensors.
 void Sensors::initialize() {
   for (int i = 0; i < 3; i++) {
     pinMode(_pins_echo[i], INPUT);
@@ -61,6 +63,9 @@ int Sensors::getDistance(int location) {
   }
 }
 
+/**
+ * Return an array containing the free distance from the three distance sensor.
+ */
 int * Sensors::getDistanceArray() {
   int * obstacles = new int[3];
   for (int i = 0; i < 3; i++) {
