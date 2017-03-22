@@ -5,6 +5,7 @@ Control control(200);
 Sensors sensors;
 boolean autonomous = false;
 int * obstacles = new int[3];
+int distFrwrd = 0;
 
 void setup(void)
 {
@@ -62,6 +63,7 @@ void loop(void)
       case 'u': // sound level
       case 'U':
         autonomous = true;
+        distFrwrd = sensors.getDistance(1);
         break;
       default:
         control.stop();
@@ -72,7 +74,8 @@ void loop(void)
 
   if (autonomous) {
     // Move forward or turn
-    if (sensors.getDistance(1) > 10) {
+    distFrwrd = (distFrwrd+sensors.getDistance(1))/2;
+    if (distFrwrd > 10) {
       control.forward();
     } 
     else {
@@ -80,6 +83,7 @@ void loop(void)
       (obstacles[0] > obstacles[2]) ? control.left() : control.right();
       delay(1000);
       control.stop();
+      distFrwrd = sensors.getDistance(1);
     }
   }
 }
