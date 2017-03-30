@@ -9,12 +9,9 @@ PathFinding pathFinding;
 
 // Variables
 boolean autonomous = false;
-<<<<<<< HEAD
-int * obstacles = new int[3];
 int distFrwrd = 0;
 int * avgTemp = new int[4];
-=======
->>>>>>> origin/master
+
 
 void setup(void)
 {

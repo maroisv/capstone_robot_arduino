@@ -10,6 +10,7 @@
 #define a_pin_gas 3
 #define read_to_mvolt 4.8828
 #define mvolt_to_cel 0.1
+#define mvolt_zero_cel 500
 
 // Left, center, right
 const int Sensors::_pin_trig = 4;
@@ -28,7 +29,7 @@ void Sensors::initialize() {
 
 // Return the temperature in celsius
 int Sensors::getTemperature() {
-  return (int) analogRead(a_pin_temp) * read_to_mvolt * mvolt_to_cel;
+  return (int) (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
 }
 
 // Return the sound level on a scal of 0 - 1024
