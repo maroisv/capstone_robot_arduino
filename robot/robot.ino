@@ -6,6 +6,7 @@ Sensors sensors;
 boolean autonomous = false;
 int * obstacles = new int[3];
 int distFrwrd = 0;
+int * avgTemp = new int[4];
 
 void setup(void)
 {
@@ -39,7 +40,11 @@ void loop(void)
         break;
       case 't': // Temperature
       case 'T':
-        Serial.println(sensors.getTemperature());
+        avgTemp[0] = sensors.getTemperature();
+        avgTemp[1] = sensors.getTemperature();
+        avgTemp[2] = sensors.getTemperature();
+        avgTemp[3] = (avgTemp[0]+avgTemp[1]+avgTemp[2])/3;
+        Serial.println(avgTemp[3]);
         break;
       case 'e':
       case 'E':
