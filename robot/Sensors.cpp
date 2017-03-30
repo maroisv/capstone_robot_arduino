@@ -17,7 +17,7 @@ const int Sensors::_pin_trig = 4;
 const int Sensors::_pins_echo[3] = {9,10,11};
 
 // Variables
-int * avgTemp = new int[4];
+int * avgRead = new int[3];
 
 // Create the Sensors object.
 Sensors::Sensors() {}
@@ -32,21 +32,26 @@ void Sensors::initialize() {
 
 // Return the temperature in celsius
 int Sensors::getTemperature() {
-  avgTemp[0] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
-  avgTemp[1] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
-  avgTemp[2] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
-  avgTemp[3] = (avgTemp[0] + avgTemp[1] + avgTemp[2])/3;
-  return (int) avgTemp[3];
+  avgRead[0] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
+  avgRead[1] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
+  avgRead[2] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
+  return (int) (avgRead[0] + avgRead[1] + avgRead[2])/3;
 }
 
 // Return the sound level on a scal of 0 - 1024
 int Sensors::getSoundLevel() {
-	return analogRead(a_pin_sound);
+  avgRead[0] = analogRead(a_pin_sound);
+  avgRead[1] = analogRead(a_pin_sound);
+  avgRead[2] = analogRead(a_pin_sound);
+  return (int) (avgRead[0] + avgRead[1] + avgRead[2])/3;
 }
 
 // Return the gas level on a scal of 0 - 1024
 int Sensors::getGasLevel() {
-	return analogRead(a_pin_gas);
+  avgRead[0] = analogRead(a_pin_gas);
+  avgRead[1] = analogRead(a_pin_gas);
+  avgRead[2] = analogRead(a_pin_gas);
+  return (int) (avgRead[0] + avgRead[1] + avgRead[2])/3;
 }
 
 /* 
@@ -55,20 +60,22 @@ int Sensors::getGasLevel() {
  * location: 0-left, 1-front, 2-right
  */
 int Sensors::getDistance(int location) {
-  digitalWrite(_pin_trig, LOW); 
-  delayMicroseconds(2);
- 
-  digitalWrite(_pin_trig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(_pin_trig, LOW);
-
-  int pulse = pulseIn(_pins_echo[location], HIGH, 29070);
-
-  if (pulse == 0) {
-    return 500;
-  } else {
-    return (int) pulse / 2 * 0.0344;
+  for (int i = 0; i < 3; i++){
+    digitalWrite(_pin_trig, LOW); 
+    delayMicroseconds(2);
+    digitalWrite(_pin_trig, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(_pin_trig, LOW);
+  
+    int pulse = pulseIn(_pins_echo[location], HIGH, 29070);
+  
+    if (pulse == 0) {
+      avgRead[i] = 500;
+    } else {
+      avgRead[i] = pulse / 2 * 0.0344;
+    }
   }
+  return (avgRead[0] + avgRead[1] + avgRead[2])/3;
 }
 
 /**
