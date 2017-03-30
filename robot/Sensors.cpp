@@ -11,13 +11,14 @@
 #define read_to_mvolt 4.8828
 #define mvolt_to_cel 0.1
 #define mvolt_zero_cel 500
+#define num_avg 3
 
 // Left, center, right
 const int Sensors::_pin_trig = 4;
 const int Sensors::_pins_echo[3] = {9,10,11};
 
 // Variables
-int * avgRead = new int[3];
+int * avgRead = new int[num_avg + 1];
 
 // Create the Sensors object.
 Sensors::Sensors() {}
@@ -32,26 +33,32 @@ void Sensors::initialize() {
 
 // Return the temperature in celsius
 int Sensors::getTemperature() {
-  avgRead[0] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
-  avgRead[1] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
-  avgRead[2] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
-  return (int) (avgRead[0] + avgRead[1] + avgRead[2])/3;
+  avgRead[num_avg] = 0;
+  for (int i = 0; i < num_avg; i++){
+  avgRead[i] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
+  avgRead[num_avg] = avgRead[num_avg] + avgRead[i];
+  }
+  return (int) avgRead[num_avg]/num_avg;
 }
 
 // Return the sound level on a scal of 0 - 1024
 int Sensors::getSoundLevel() {
-  avgRead[0] = analogRead(a_pin_sound);
-  avgRead[1] = analogRead(a_pin_sound);
-  avgRead[2] = analogRead(a_pin_sound);
-  return (int) (avgRead[0] + avgRead[1] + avgRead[2])/3;
+  avgRead[num_avg] = 0;
+  for (int i = 0; i < num_avg; i++){
+  avgRead[i] = analogRead(a_pin_sound);
+  avgRead[num_avg] = avgRead[num_avg] + avgRead[i];
+  }
+  return (int) avgRead[num_avg]/num_avg;
 }
 
 // Return the gas level on a scal of 0 - 1024
 int Sensors::getGasLevel() {
-  avgRead[0] = analogRead(a_pin_gas);
-  avgRead[1] = analogRead(a_pin_gas);
-  avgRead[2] = analogRead(a_pin_gas);
-  return (int) (avgRead[0] + avgRead[1] + avgRead[2])/3;
+  avgRead[num_avg] = 0;
+  for (int i = 0; i < num_avg; i++){
+  avgRead[i] = analogRead(a_pin_gas);
+  avgRead[num_avg] = avgRead[num_avg] + avgRead[i];
+  }
+  return (int) avgRead[num_avg]/num_avg;
 }
 
 /* 
@@ -60,7 +67,8 @@ int Sensors::getGasLevel() {
  * location: 0-left, 1-front, 2-right
  */
 int Sensors::getDistance(int location) {
-  for (int i = 0; i < 3; i++){
+  avgRead[num_avg] = 0;
+  for (int i = 0; i < num_avg; i++){
     digitalWrite(_pin_trig, LOW); 
     delayMicroseconds(2);
     digitalWrite(_pin_trig, HIGH);
@@ -74,8 +82,9 @@ int Sensors::getDistance(int location) {
     } else {
       avgRead[i] = pulse / 2 * 0.0344;
     }
-  }
-  return (avgRead[0] + avgRead[1] + avgRead[2])/3;
+    avgRead[num_avg] = avgRead[num_avg] + avgRead[i];
+  }  
+  return (int) avgRead[num_avg]/num_avg;
 }
 
 /**
