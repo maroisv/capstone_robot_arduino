@@ -9,17 +9,25 @@
 class Control
 {
   public:
-    Control(int speed);
-    void initialize();
+    Control();
+    void initialize(int speed);
     void forward();
+    void forward(int speed);
 	  void reverse();
 	  void left();
 	  void right();
     void stop();
     void beep(int len);
     void beepBeep(int period, int len);
+    void debug_printEncoderCount();
+    void resetEncoderCount();
   private:
     int _speed;
+    static volatile int _encoderCountLeft;
+    static volatile int _encoderCountRight;
+
+    static void incrementEncoderLeft();
+    static void incrementEncoderRight();
 };
 
 #endif

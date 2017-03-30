@@ -1,24 +1,34 @@
 #include "Control.h"
 #include "Sensors.h"
+#include "PathFinding.h"
 
-Control control(200);
+// Modules
+Control control;
 Sensors sensors;
+PathFinding pathFinding;
+
+// Variables
 boolean autonomous = false;
+<<<<<<< HEAD
 int * obstacles = new int[3];
 int distFrwrd = 0;
 int * avgTemp = new int[4];
+=======
+>>>>>>> origin/master
 
 void setup(void)
 {
-  control.initialize();
+  control.initialize(200);
   sensors.initialize();
+  pathFinding.initialize();
+
   Serial.begin(9600);
-  Serial.println("setup");
+  Serial.println("Setup finished");
 }
 
 void loop(void)
 {
-  if (Serial.available() > 0) {
+  if (Serial.available() > 0) { // TODO: Hide communication in Module
     char val = Serial.read();
     switch(val) // Perform an action depending on the command
     {
@@ -65,30 +75,22 @@ void loop(void)
         control.beep(2000);
         control.beepBeep(200,3000);
         break;
-      case 'u': // sound level
+      case 'u': // Go autonomous
       case 'U':
         autonomous = true;
-        distFrwrd = sensors.getDistance(1);
         break;
       default:
         control.stop();
+        control.debug_printEncoderCount();
+        control.resetEncoderCount();
         autonomous = false;
         break;
     }
   }
 
   if (autonomous) {
-    // Move forward or turn
-    distFrwrd = (distFrwrd+sensors.getDistance(1))/2;
-    if (distFrwrd > 10) {
-      control.forward();
-    } 
-    else {
-      obstacles = sensors.getDistanceArray();
-      (obstacles[0] > obstacles[2]) ? control.left() : control.right();
-      delay(1000);
-      control.stop();
-      distFrwrd = sensors.getDistance(1);
-    }
+    pathFinding.advance(control, sensors);
   }
 }
+
+

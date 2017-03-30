@@ -15,10 +15,10 @@ class Sensors
 	  int getTemperature();
 	  int getSoundLevel();
 	  int getGasLevel();
-    int * getDistanceArray();
+    void fillDistanceArray(int * distArray);
   private:
-    static const int _pins_echo[];
-	  static const int _pins_trig[];
+    static const int _pin_trig;
+	  static const int _pins_echo[];
 };
 
 #endif
