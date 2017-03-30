@@ -16,6 +16,9 @@
 const int Sensors::_pin_trig = 4;
 const int Sensors::_pins_echo[3] = {9,10,11};
 
+// Variables
+int * avgTemp = new int[4];
+
 // Create the Sensors object.
 Sensors::Sensors() {}
 
@@ -29,7 +32,11 @@ void Sensors::initialize() {
 
 // Return the temperature in celsius
 int Sensors::getTemperature() {
-  return (int) (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
+  avgTemp[0] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
+  avgTemp[1] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
+  avgTemp[2] = (analogRead(a_pin_temp) * read_to_mvolt - mvolt_zero_cel) * mvolt_to_cel;
+  avgTemp[3] = (avgTemp[0] + avgTemp[1] + avgTemp[2])/3;
+  return (int) avgTemp[3];
 }
 
 // Return the sound level on a scal of 0 - 1024

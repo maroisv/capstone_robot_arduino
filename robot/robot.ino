@@ -9,9 +9,6 @@ PathFinding pathFinding;
 
 // Variables
 boolean autonomous = false;
-int distFrwrd = 0;
-int * avgTemp = new int[4];
-
 
 void setup(void)
 {
@@ -47,11 +44,7 @@ void loop(void)
         break;
       case 't': // Temperature
       case 'T':
-        avgTemp[0] = sensors.getTemperature();
-        avgTemp[1] = sensors.getTemperature();
-        avgTemp[2] = sensors.getTemperature();
-        avgTemp[3] = (avgTemp[0]+avgTemp[1]+avgTemp[2])/3;
-        Serial.println(avgTemp[3]);
+        Serial.println(sensors.getTemperature());
         break;
       case 'e':
       case 'E':
