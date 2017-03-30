@@ -12,8 +12,8 @@
 #define mvolt_to_cel 0.1
 
 // Left, center, right
-const int Sensors::_pins_echo[3] = {10,3,9};
-const int Sensors::_pins_trig[3] = {11,2,4};
+const int Sensors::_pin_trig = 4;
+const int Sensors::_pins_echo[3] = {9,10,11};
 
 // Create the Sensors object.
 Sensors::Sensors() {}
@@ -22,8 +22,8 @@ Sensors::Sensors() {}
 void Sensors::initialize() {
   for (int i = 0; i < 3; i++) {
     pinMode(_pins_echo[i], INPUT);
-    pinMode(_pins_trig[i], OUTPUT);
   }
+  pinMode(_pin_trig, OUTPUT);
 }
 
 // Return the temperature in celsius
@@ -47,12 +47,12 @@ int Sensors::getGasLevel() {
  * location: 0-left, 1-front, 2-right
  */
 int Sensors::getDistance(int location) {
-  digitalWrite(_pins_trig[location], LOW); 
+  digitalWrite(_pin_trig, LOW); 
   delayMicroseconds(2);
  
-  digitalWrite(_pins_trig[location], HIGH);
+  digitalWrite(_pin_trig, HIGH);
   delayMicroseconds(10);
-  digitalWrite(_pins_trig[location], LOW);
+  digitalWrite(_pin_trig, LOW);
 
   int pulse = pulseIn(_pins_echo[location], HIGH, 29070);
 

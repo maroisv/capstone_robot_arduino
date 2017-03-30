@@ -1,22 +1,26 @@
 #include "Control.h"
 #include "Sensors.h"
 
-Control control(200);
+// Modules
+Control control;
 Sensors sensors;
+
+// Variables
 boolean autonomous = false;
-int * obstacles = new int[3];
+int * obstacles = new int[3]; // TODO: Remove - hide in modules
 
 void setup(void)
 {
-  control.initialize();
+  control.initialize(200);
   sensors.initialize();
+
   Serial.begin(9600);
-  Serial.println("setup");
+  Serial.println("Setup finished");
 }
 
 void loop(void)
 {
-  if (Serial.available() > 0) {
+  if (Serial.available() > 0) { // TODO: Hide communication in Module
     char val = Serial.read();
     switch(val) // Perform an action depending on the command
     {
@@ -59,12 +63,14 @@ void loop(void)
         control.beep(2000);
         control.beepBeep(200,3000);
         break;
-      case 'u': // sound level
+      case 'u': // Go autonomous
       case 'U':
         autonomous = true;
         break;
       default:
         control.stop();
+        control.debug_printEncoderCount();
+        control.resetEncoderCount();
         autonomous = false;
         break;
     }
@@ -83,3 +89,5 @@ void loop(void)
     }
   }
 }
+
+
