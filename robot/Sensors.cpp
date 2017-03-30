@@ -64,13 +64,11 @@ int Sensors::getDistance(int location) {
 }
 
 /**
- * Return an array containing the free distance from the three distance sensor.
+ * Fill an array containing the free distance from the three distance sensor.
  */
-int * Sensors::getDistanceArray() {
-  int * obstacles = new int[3];
+void Sensors::fillDistanceArray(int * distArray) {
   for (int i = 0; i < 3; i++) {
-    obstacles[i] = getDistance(i);
+    distArray[i] = getDistance(i);
   }
-  return obstacles;
 }
 

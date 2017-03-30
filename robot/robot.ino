@@ -1,19 +1,20 @@
 #include "Control.h"
 #include "Sensors.h"
+#include "PathFinding.h"
 
 // Modules
 Control control;
 Sensors sensors;
+PathFinding pathFinding;
 
 // Variables
 boolean autonomous = false;
-int * obstacles = new int[3]; // TODO: Remove - hide in modules
-int distFrwrd = 0;
 
 void setup(void)
 {
   control.initialize(200);
   sensors.initialize();
+  pathFinding.initialize();
 
   Serial.begin(9600);
   Serial.println("Setup finished");
@@ -67,7 +68,6 @@ void loop(void)
       case 'u': // Go autonomous
       case 'U':
         autonomous = true;
-        distFrwrd = sensors.getDistance(1);
         break;
       default:
         control.stop();
@@ -79,18 +79,7 @@ void loop(void)
   }
 
   if (autonomous) {
-    // Move forward or turn
-    distFrwrd = (distFrwrd+sensors.getDistance(1))/2;
-    if (distFrwrd > 10) {
-      control.forward();
-    } 
-    else {
-      obstacles = sensors.getDistanceArray();
-      (obstacles[0] > obstacles[2]) ? control.left() : control.right();
-      delay(1000);
-      control.stop();
-      distFrwrd = sensors.getDistance(1);
-    }
+    pathFinding.advance(control, sensors);
   }
 }
 
