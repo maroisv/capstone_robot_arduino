@@ -24,6 +24,11 @@ int PathFinding::advance(Control control, Sensors sensors) {
   // Get distance from sensors.
   prevForwardDist = obstacles[1];
   sensors.fillDistanceArray(obstacles);
+  Serial.print(obstacles[0]);
+  Serial.print(" ");
+  Serial.print(obstacles[1]);
+  Serial.print(" ");
+  Serial.println(obstacles[2]);
 
   // Take the average from the two most recent forward distance.
   if ((prevForwardDist + obstacles[1])/2 > 10) {
@@ -35,5 +40,6 @@ int PathFinding::advance(Control control, Sensors sensors) {
     delay(1000);
     control.stop();
   }
+  delay(2000);
 }
 
