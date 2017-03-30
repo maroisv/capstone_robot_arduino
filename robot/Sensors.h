@@ -17,8 +17,8 @@ class Sensors
 	  int getGasLevel();
     int * getDistanceArray();
   private:
-    static const int _pins_echo[];
-	  static const int _pins_trig[];
+    static const int _pin_trig;
+	  static const int _pins_echo[];
 };
 
 #endif
