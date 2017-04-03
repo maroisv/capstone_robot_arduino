@@ -26,6 +26,14 @@ void loop(void)
     char val = Serial.read();
     switch(val) // Perform an action depending on the command
     {
+      case 'f'://Move Forward
+      case 'F':
+        control.forward(100);
+        break;
+      case 'r'://Move Backwards
+      case 'R':
+        control.turn(180);
+        break;
       case 'w'://Move Forward
       case 'W':
         control.forward();
