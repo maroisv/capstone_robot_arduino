@@ -27,7 +27,7 @@
 
 // Speed constants
 #define MAX_SPEED 255
-#define MIN_SPEED 120
+#define MIN_SPEED 130
 
 /**
  * Momemtum delay
@@ -40,7 +40,7 @@
 // PD control
 #define P 2
 #define D 0.2
-#define UPDATE_DELAY 500
+#define UPDATE_DELAY 100
 
 int _speed;
 int _speedR;
@@ -122,7 +122,7 @@ void Control::forward(int distance)
   
   while (diff > 0.2) {
     // Set speed
-    setSpeed(prevSpeed * diff * 0.2);
+    setSpeed(prevSpeed * diff * 0.1);
     correctSpeed(UPDATE_DELAY);
 
     debug_printEncoderSpeedInfo();
@@ -208,8 +208,10 @@ void Control::turn(int angleToRot) {
   
   while (diff > 2) {
     // Set speed
-    setSpeed(prevSpeed * diff * 0.5);
+    setSpeed(prevSpeed * 0.02 * diff);
     correctSpeed(UPDATE_DELAY);
+    Serial.print("diff=");
+    Serial.println(diff);
     debug_printEncoderSpeedInfo();
     
     // Start turning
