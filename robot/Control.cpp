@@ -239,12 +239,13 @@ void Control::turn(int angleToRot) {
 /**
  * Stop the motors.
  */
-void Control::stop()
+float Control::stop()
 {
   digitalWrite(pin_speed_1,LOW);
   digitalWrite(pin_speed_2,LOW);
   
   Serial.println("stop");
+  return getDistanceTravelled();
 }
 
 /**

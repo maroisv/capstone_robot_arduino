@@ -31,15 +31,14 @@ int PathFinding::advance(Control control, Sensors sensors) {
   Serial.println(obstacles[2]);
 
   // Take the average from the two most recent forward distance.
-  if ((prevForwardDist + obstacles[1])/2 > 10) {
+  if ((prevForwardDist + obstacles[1])/2 > 20) {
     // Go forward or continue to go forward.
     control.forward();
+    delay(500);
+    control.stop(); // TODO: Get the distance travelled
   } else {
     // Turn toward the space with the most space. 
-    (obstacles[0] > obstacles[2]) ? control.left() : control.right();
-    delay(1000);
-    control.stop();
+    (obstacles[0] > obstacles[2]) ? control.turn(270) : control.turn(90); // TODO: Get the exact angle turned
   }
-  delay(2000);
 }
 

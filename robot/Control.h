@@ -17,7 +17,7 @@ class Control
 	  void left();
 	  void right();
     void turn(int angleToRot);
-    void stop();
+    float stop();
     void beep(int len);
     void beepBeep(int period, int len);
     void debug_printEncoderCount();
