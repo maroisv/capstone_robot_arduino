@@ -12,11 +12,11 @@ class Control
     Control();
     void initialize(int speed);
     void forward();
-    void forward(int distance);
+    float forward(int distance);
 	  void reverse();
 	  void left();
 	  void right();
-    void turn(int angleToRot);
+    float turn(int angleToRot);
     float stop();
     void beep(int len);
     void beepBeep(int period, int len);
