@@ -106,9 +106,13 @@ void Control::forward() {
 }
 
 /**
- * Move forward a specified distance
+ * Move forward a specified distance.
+ * 
+ * distance: Distance to move forwrd to (cm)
+ * 
+ * Return: exact distance it moved (cm).
  */
-void Control::forward(int distance)
+float Control::forward(int distance)
 {
   // Make sure the robot is stopped and the encoder count is resetted.
   stop();
@@ -145,8 +149,10 @@ void Control::forward(int distance)
 
   // Print final rotation angle and reset encoder count.
   Serial.print("Distance: ");
-  Serial.println(getDistanceTravelled());
+  float dist = getDistanceTravelled();
+  Serial.println(dist);
   resetEncoderCount();
+  return dist;
 }
 
 /**
@@ -187,8 +193,12 @@ void Control::right()
 
 /**
  * Turn to the specified angle.
+ * 
+ * angleToRot: Orientation relative to the robot to turn to (degrees).
+ * 
+ * Return: Exact orientation turned to relative to previous orientation (degrees).
  */
-void Control::turn(int angleToRot) {
+float Control::turn(int angleToRot) {
   // Make sure the robot is stopped and the encoder count is resetted.
   stop();
   delay(momDelay);
@@ -232,12 +242,20 @@ void Control::turn(int angleToRot) {
 
   // Print final rotation angle and reset encoder count.
   Serial.print("Rotation: ");
-  Serial.println(getAngleRotation());
+  float angle = getAngleRotation();
+  (turnRight) ? angle = angle : angle = 360 - angle;
+  Serial.println(angle);
   resetEncoderCount();
+  return angle;
 }
 
 /**
  * Stop the motors.
+ * 
+ * Return: distance travelled (cm).
+ * 
+ * NOTE: The distance returned only works 
+ * if the robot was going forward.
  */
 float Control::stop()
 {
