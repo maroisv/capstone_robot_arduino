@@ -9,19 +9,19 @@
 #include "Control.h"
 #include "Math.h"
 
-bool mapgrid[501][501] = {0}
-float curr_robot_x = 251 // current x coordinate of the robot
-float curr_robot_y = 251 // current y coordinate of the robot
-float curr_robot_angle = 0 //current angle of robot with respect to starting position
+bool mapgrid[101][101] = {0};
+float curr_robot_x = 51; // current x coordinate of the robot
+float curr_robot_y = 51; // current y coordinate of the robot
+float curr_robot_angle = 0; //current angle of robot with respect to starting position
 
 /*
  * used to temporarily store the x and y position of any obstacle
  * found by each of the robot's 3 sensors before placing them on the
  * map grid
  */
-int obstacles_from_sensors[3][2]
+int obstacles_from_sensors[3][2];
 
-int quadrant = 2
+int quadrant = 2;
 /*
  * Used in calculation of obstacle positions. Based on the current position
  * and angle of the robot (with respect to its' starting position), its'
@@ -37,7 +37,7 @@ int quadrant = 2
  *           +-180 deg
  */
 
-float dist_sensors_array[3] = [0, 0, 0]
+int dist_sensors_array[3] = {0, 0, 0};
 
 /*
  * Dimensions of robot: ~10cm by ~20cm
@@ -91,8 +91,8 @@ float get_y_dist(float theta, int dist){
 }
 
 void update_map(int x, int y, int pos_x, int pos_y, int quad){
-  int grid_x = x_for_quad(x, quad) + pos_x;
-  int grid_y = y_for_quad(y, quad) + pos_y;
+  int grid_x = x + pos_x;
+  int grid_y = y + pos_y;
 
   if(mapgrid[grid_x][grid_y] != 0){
     mapgrid[grid_x][grid_y] = 1;
@@ -107,7 +107,7 @@ int x_for_quad(int x, int quad){
   else{
     out = x;
   }
-  return out
+  return out;
 }
 
 int y_for_quad(int y, int quad){
@@ -118,7 +118,7 @@ int y_for_quad(int y, int quad){
   else{
     out = y;
   }
-  return out
+  return out;
 }
 
 void Mapmaking::initialize(){
@@ -126,7 +126,7 @@ void Mapmaking::initialize(){
 
 void Mapmaking::advance(Control control, Sensors sensors){
   //get distance readings from the three sensors
-  int dist_fwd = getDistance[1];
+  int dist_fwd = sensors.getDistance[1];
   int dist_left = getDistance[0];
   int dist_right = getDistance[2];
   dist_sensors_array[0] = {dist_left, dist_ahead, dist_right};
