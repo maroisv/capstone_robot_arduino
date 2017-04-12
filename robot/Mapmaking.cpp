@@ -10,8 +10,8 @@
 #include "Math.h"
 
 bool mapgrid[101][101] = {0};
-float curr_robot_x = 51; // current x coordinate of the robot
-float curr_robot_y = 51; // current y coordinate of the robot
+float curr_robot_x = 301; // current x coordinate of the robot
+float curr_robot_y = 301; // current y coordinate of the robot
 float curr_robot_angle = 0; //current angle of robot with respect to starting position
 
 /*
@@ -37,14 +37,14 @@ int quadrant = 2;
  *           +-180 deg
  */
 
-int dist_sensors_array[3] = {0, 0, 0};
+//int dist_sensors_array[3] = {0, 0, 0};
 
 /*
  * Dimensions of robot: ~10cm by ~20cm
  * Distance censors have max range of ~500cm (5m),
  * but rarely work properly. 
  * 
- * We'll have a 2d array of 500 x 500 cm
+ * We'll have a 2d array of 100 x 100 cm
  * (i.e. 50m in 10cm increments)
  */
 
@@ -82,11 +82,12 @@ float get_theta(float angle, int quadrant){
   return theta;
 }
 
-float get_x_dist(float theta, int dist){
+int get_x_dist(float theta, int dist){
+  
   return cos(theta)/dist;
 }
 
-float get_y_dist(float theta, int dist){
+int get_y_dist(float theta, int dist){
   return sin(theta)/dist;
 }
 
@@ -126,10 +127,10 @@ void Mapmaking::initialize(){
 
 void Mapmaking::advance(Control control, Sensors sensors){
   //get distance readings from the three sensors
-  int dist_fwd = sensors.getDistance[1];
-  int dist_left = getDistance[0];
-  int dist_right = getDistance[2];
-  dist_sensors_array[0] = {dist_left, dist_ahead, dist_right};
+  int dist_fwd = sensors.getDistance(1);
+  int dist_left = sensors.getDistance(0);
+  int dist_right = sensors.getDistance(2);
+  int dist_sensors_array[3] = {dist_left, dist_fwd, dist_right};
 
   /*
    * At this point, the function will update the global
@@ -145,15 +146,16 @@ void Mapmaking::advance(Control control, Sensors sensors){
    int fwd_quad = set_quadrant(curr_robot_angle);
    int left_quad = set_quadrant(curr_robot_angle - 90);
    int right_quad = set_quadrant(curr_robot_angle + 90);
-   
-   float angle_fwd_sensor = get_theta(curr_angle);
-   float angle_left_sensor = get_theta(curr_angle - 90);
-   float angle_right_sensor = get_theta(curr_angle + 90);
 
-   obstacles_from_sensors[0][0] = get_x_dist((int) angle_left_sensor, (int) dist_left, left_quad);
-   obstacles_from_sensors[0][1] = get_y_dist((int) angle_left_sensor, (int) dist_left, left_quad);
-   obstacles_from_sensors[1][0] = get_x_dist((int) angle_fwd_sensor, (int) dist_fwd, fwd_quad);
-   obstacles_from_sensors[1][1] = get_y_dist((int) angle_fwd_sensor, (int) dist_fwd, fwd_quad);
-   obstacles_from_sensors[2][0] = get_x_dist((int) angle_right_sensor, (int) dist_right, right_quad);
-   obstacles_from_sensors[2][1] = get_y_dist((int) angle_right_sensor, (int) dist_right, right_quad);
+   
+   float angle_fwd_sensor = get_theta(curr_robot_angle, fwd_quad);
+   float angle_left_sensor = get_theta(curr_robot_angle - 90, left_quad);
+   float angle_right_sensor = get_theta(curr_robot_angle + 90, right_quad);
+
+   obstacles_from_sensors[0][0] = get_x_dist((float) angle_left_sensor, (int) dist_left); //TODO: add quadrants
+   obstacles_from_sensors[0][1] = get_y_dist((float) angle_left_sensor, (int) dist_left);
+   obstacles_from_sensors[1][0] = get_x_dist((float) angle_fwd_sensor, (int) dist_fwd);
+   obstacles_from_sensors[1][1] = get_y_dist((float) angle_fwd_sensor, (int) dist_fwd);
+   obstacles_from_sensors[2][0] = get_x_dist((float) angle_right_sensor, (int) dist_right);
+   obstacles_from_sensors[2][1] = get_y_dist((float) angle_right_sensor, (int) dist_right);
 }

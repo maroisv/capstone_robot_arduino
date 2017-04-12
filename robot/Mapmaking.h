@@ -3,6 +3,9 @@
  * location and mapping
  */
 
+#ifndef mapmaking.h
+#define mapmaking.h
+
 #include "Sensors.h"
 #include "Control.h"
 #include "Math.h"
@@ -22,3 +25,5 @@ class Mapmaking
     int y_for_quad(int y, int quad);
     void update_map(int x, int y, int pos_x, int pos_y, int quad);
 };
+
+#endif
