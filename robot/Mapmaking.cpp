@@ -83,7 +83,6 @@ float get_theta(float angle, int quadrant){
 }
 
 int get_x_dist(float theta, int dist){
-  
   return cos(theta)/dist;
 }
 
