@@ -9,10 +9,18 @@
 #include "Control.h"
 #include "Math.h"
 
-bool mapgrid[180][180] = {0};
-float curr_robot_x = 301; // current x coordinate of the robot
-float curr_robot_y = 301; // current y coordinate of the robot
+bool mapgrid[181][181] = {0};
+/*
+ * This array represents the map. For reasons defined below, it
+ * represents an area with width 9m and length 9m, with a resolution
+ * of 5cm (i.e. each [x][y] represents a 5x5cm square). The value of
+ * each square [x][y] is either 0 (no obstacle there) or 1 (there is
+ * an obstacle)
+ */
+int curr_robot_x = 91; // current x coordinate of the robot
+int curr_robot_y = 91; // current y coordinate of the robot
 float curr_robot_angle = 0; //current angle of robot with respect to starting position
+
 
 /*
    used to temporarily store the x and y position of any obstacle
@@ -93,15 +101,6 @@ int get_y_dist(float theta, int dist) {
   return sin(theta) / dist;
 }
 
-void update_map(int x, int y, int pos_x, int pos_y, int quad) {
-  int grid_x = x + pos_x;
-  int grid_y = y + pos_y;
-
-  if (mapgrid[grid_x][grid_y] != 0) {
-    mapgrid[grid_x][grid_y] = 1;
-  }
-}
-
 int x_for_quad(int x, int quad) {
   int out = 0;
   if ((quad == 1) || (quad == 3)) {
@@ -122,6 +121,15 @@ int y_for_quad(int y, int quad) {
     out = y;
   }
   return out;
+}
+
+void update_map(int x, int y, int pos_x, int pos_y) {
+  int grid_x = x + curr_robot_x;
+  int grid_y = y + curr_robot_y;
+
+  if (mapgrid[grid_x][grid_y] != 0) {
+    mapgrid[grid_x][grid_y] = 1;
+  }
 }
 
 void Mapmaking::initialize() {
@@ -160,4 +168,8 @@ void Mapmaking::advance(Control control, Sensors sensors) {
   obstacles_from_sensors[1][1] = get_y_dist((float) angle_fwd_sensor, (int) dist_fwd);
   obstacles_from_sensors[2][0] = get_x_dist((float) angle_right_sensor, (int) dist_right);
   obstacles_from_sensors[2][1] = get_y_dist((float) angle_right_sensor, (int) dist_right);
+
+  update_map(x_for_quad(obstacles_from_sensors[0][0], left_quad), y_for_quad(obstacles_from_sensors[0][1], left_quad), curr_robot_x, curr_robot_y);
+  update_map(x_for_quad(obstacles_from_sensors[1][0], fwd_quad), y_for_quad(obstacles_from_sensors[1][1], fwd_quad), curr_robot_x, curr_robot_y);
+  update_map(x_for_quad(obstacles_from_sensors[2][0], right_quad), y_for_quad(obstacles_from_sensors[2][1], right_quad), curr_robot_x, curr_robot_y);
 }
