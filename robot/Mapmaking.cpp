@@ -11,17 +11,22 @@
 
 bool mapgrid[181][181] = {0};
 /*
- * This array represents the map. For reasons defined below, it
- * represents an area with width 9m and length 9m, with a resolution
- * of 5cm (i.e. each [x][y] represents a 5x5cm square). The value of
- * each square [x][y] is either 0 (no obstacle there) or 1 (there is
- * an obstacle)
- */
+   This array represents the map. For reasons defined below, it
+   represents an area with width 9m and length 9m, with a resolution
+   of 5cm (i.e. each [x][y] represents a 5x5cm square). The value of
+   each square [x][y] is either 0 (no obstacle there) or 1 (there is
+   an obstacle)
+*/
 int curr_robot_x = 91; // current x coordinate of the robot
 int curr_robot_y = 91; // current y coordinate of the robot
 float curr_robot_angle = 0; //current angle of robot with respect to starting position
 
-
+/*
+ * the robot's previous position and angle
+ */
+int prev_robot_x = 91;
+int prev_robot_y = 91;
+float prev_robot_angle = 0;
 /*
    used to temporarily store the x and y position of any obstacle
    found by each of the robot's 3 sensors before placing them on the
@@ -133,10 +138,35 @@ void update_map(int x, int y, int pos_x, int pos_y) {
 }
 
 void Mapmaking::initialize() {
+  curr_robot_x = 91; // current x coordinate of the robot
+  curr_robot_y = 91; // current y coordinate of the robot
+  curr_robot_angle = 0; //current angle of robot with respect to starting position
+
+  prev_robot_x = 91;
+  prev_robot_y = 91;
+  prev_robot_angle = 0;
 }
 
 void Mapmaking::advance(Control control, Sensors sensors) {
   //get distance readings from the three sensors
+
+  prev_robot_angle = curr_robot_angle;
+  curr_robot_angle = control.getAngleRotation() - prev_robot_angle;
+  if (curr_robot_angle > 180){
+    curr_robot_angle = -180 - curr_robot_angle;
+  }
+  else if (curr_robot_angle < -180){
+    curr_robot_angle = 180 - curr_robot_angle;
+  }
+  
+  int fwd_quad = set_quadrant(curr_robot_angle);
+
+  float new_dist = control.getDistanceTravelled();
+  prev_robot_x = curr_robot_x;
+  prev_robot_y = curr_robot_y;
+  curr_robot_x = prev_robot_x + x_for_quad(get_x_dist(curr_robot_angle, new_dist), fwd_quad);
+  curr_robot_y = prev_robot_y + y_for_quad(get_y_dist(curr_robot_angle, new_dist), fwd_quad);
+  
   int dist_fwd = sensors.getDistance(1);
   int dist_left = sensors.getDistance(0);
   int dist_right = sensors.getDistance(2);
@@ -147,16 +177,15 @@ void Mapmaking::advance(Control control, Sensors sensors) {
      curr_robot_x, curr_robot_y and curr_robot_angle variables
      with newly-supplied data. However, I'm not entirely sure how to calculate this
   */
-
-  //curr_robot_angle = curr_robot_angle + new_angle;
-  //new_angle can be +'ve or -'ve
-  //if curr_angle > 180, set curr_angle = -180 - curr_angle
-  //if curr_angle < -180, set curr_angle = 180 - curr_angle
-
-  int fwd_quad = set_quadrant(curr_robot_angle);
+  /*
+    curr_robot_angle = curr_robot_angle + new_angle;
+    new_angle can be +'ve or -'ve
+    if curr_angle > 180, set curr_angle = -180 - curr_angle
+    if curr_angle < -180, set curr_angle = 180 - curr_angle
+  */
+  
   int left_quad = set_quadrant(curr_robot_angle - 90);
   int right_quad = set_quadrant(curr_robot_angle + 90);
-
 
   float angle_fwd_sensor = get_theta(curr_robot_angle, fwd_quad);
   float angle_left_sensor = get_theta(curr_robot_angle - 90, left_quad);

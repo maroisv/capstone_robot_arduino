@@ -24,14 +24,14 @@ class Control
     void resetEncoderCount();
     int getSpeed();
     void setSpeed(int speed);
+    float getDistanceTravelled();
+    float getAngleRotation();
+    float getTrackDistance(int num);
   private:
     int _speed;
     static volatile int _encoderCountLeft;
     static volatile int _encoderCountRight;
 
-    float getTrackDistance(int num);
-    float getDistanceTravelled();
-    float getAngleRotation();
     void correctSpeed(int timeDiff);
     void debug_printEncoderSpeedInfo();
 
