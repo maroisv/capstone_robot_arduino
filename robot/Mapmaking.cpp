@@ -129,8 +129,8 @@ int y_for_quad(int y, int quad) {
 }
 
 void update_map(int x, int y, int pos_x, int pos_y) {
-  int grid_x = x + curr_robot_x;
-  int grid_y = y + curr_robot_y;
+  int grid_x = round((x + curr_robot_x)/5);
+  int grid_y = round((y + curr_robot_y)/5);
 
   if (mapgrid[grid_x][grid_y] != 0) {
     mapgrid[grid_x][grid_y] = 1;
