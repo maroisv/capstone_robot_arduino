@@ -2,6 +2,8 @@
    Mapmaking.cpp: library for implementing simultaneous location
    and mapping, i.e. generating a 2d grid of the robot's surroundings
    as it moves about
+
+   TEST
 */
 
 #include "Mapmaking.h"
