@@ -202,3 +202,4 @@ void Mapmaking::advance(Control control, Sensors sensors) {
   update_map(x_for_quad(obstacles_from_sensors[1][0], fwd_quad), y_for_quad(obstacles_from_sensors[1][1], fwd_quad), curr_robot_x, curr_robot_y);
   update_map(x_for_quad(obstacles_from_sensors[2][0], right_quad), y_for_quad(obstacles_from_sensors[2][1], right_quad), curr_robot_x, curr_robot_y);
 }
+
