@@ -139,6 +139,16 @@ void update_map(int x, int y, int pos_x, int pos_y) {
   }
 }
 
+void print_spaces(){
+  Serial.print(mapgrid[88][88] + mapgrid[88][89] + mapgrid[88][90] + mapgrid[88][91] + mapgrid[88][92] + mapgrid[88][93] + mapgrid[88][94]);
+  Serial.print(mapgrid[89][88] + mapgrid[89][89] + mapgrid[89][90] + mapgrid[89][91] + mapgrid[89][92] + mapgrid[89][93] + mapgrid[89][94]);
+  Serial.print(mapgrid[90][88] + mapgrid[90][89] + mapgrid[90][90] + mapgrid[90][91] + mapgrid[90][92] + mapgrid[90][93] + mapgrid[90][94]);
+  Serial.print(mapgrid[91][88] + mapgrid[91][89] + mapgrid[91][90] + mapgrid[91][91] + mapgrid[91][92] + mapgrid[91][93] + mapgrid[91][94]);
+  Serial.print(mapgrid[92][88] + mapgrid[92][89] + mapgrid[92][90] + mapgrid[92][91] + mapgrid[92][92] + mapgrid[92][93] + mapgrid[92][94]);
+  Serial.print(mapgrid[93][88] + mapgrid[93][89] + mapgrid[93][90] + mapgrid[93][91] + mapgrid[93][92] + mapgrid[93][93] + mapgrid[93][94]);
+  Serial.print(mapgrid[94][88] + mapgrid[94][89] + mapgrid[94][90] + mapgrid[94][91] + mapgrid[94][92] + mapgrid[94][93] + mapgrid[94][94]);
+}
+
 void Mapmaking::initialize() {
   curr_robot_x = 91; // current x coordinate of the robot
   curr_robot_y = 91; // current y coordinate of the robot

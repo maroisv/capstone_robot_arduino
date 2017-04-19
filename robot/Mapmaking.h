@@ -16,6 +16,7 @@ class Mapmaking
     Mapmaking();
     void initialize();
     void advance(Control control, Sensors sensors);
+    void print_spaces();
   private:
     int set_quadrant(float angle);
     float get_theta(float angle, int quadrant);
