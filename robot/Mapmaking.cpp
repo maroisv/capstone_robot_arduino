@@ -11,23 +11,27 @@
 #include "Control.h"
 #include "Math.h"
 
-bool mapgrid[181][181] = {0};
+Mapmaking::Mapmaking() {}
+
+bool mapgrid[31][31];
 /*
-   This array represents the map. For reasons defined below, it
-   represents an area with width 9m and length 9m, with a resolution
-   of 5cm (i.e. each [x][y] represents a 5x5cm square). The value of
-   each square [x][y] is either 0 (no obstacle there) or 1 (there is
-   an obstacle)
+   This array represents the map. It represents an area with length
+   and width 1.5 m with a resolution of 5 cm. (i.e. each [x][y] 
+   represents a 5x5cm square). The value of each square [x][y] 
+   is either 0 (no obstacle there) or 1 (there is an obstacle).
+
+   This method has huge memory issues, and just having an array this
+   small uses 65% of the memory space.
 */
-int curr_robot_x = 91; // current x coordinate of the robot
-int curr_robot_y = 91; // current y coordinate of the robot
+int curr_robot_x = 16; // current x coordinate of the robot
+int curr_robot_y = 16; // current y coordinate of the robot
 float curr_robot_angle = 0; //current angle of robot with respect to starting position
 
 /*
- * the robot's previous position and angle
- */
-int prev_robot_x = 91;
-int prev_robot_y = 91;
+   the robot's previous position and angle
+*/
+int prev_robot_x = 16;
+int prev_robot_y = 16;
 float prev_robot_angle = 0;
 /*
    used to temporarily store the x and y position of any obstacle
@@ -60,13 +64,9 @@ int quadrant = 2;
    but rarely work properly. However, the maximum
    effective range of the robot's Bluetooth module
    is ~30m
-
-   Arduino does not allow 2D arrays larger than
-   [180][180], which will allow our map to capture
-   an area that's 9 x 9 meters, with a 5cm resolution
 */
 
-int set_quadrant(float angle) {
+int Mapmaking::set_quadrant(float angle) {
   int quad;
   if ((angle >= 0) && (angle <= 90)) {
     quad = 2;
@@ -83,7 +83,7 @@ int set_quadrant(float angle) {
   return quad;
 }
 
-float get_theta(float angle, int quadrant) {
+float Mapmaking::get_theta(float angle, int quadrant) {
   float theta;
   if (quadrant == 1) {
     theta = abs(-90 - angle);
@@ -100,15 +100,17 @@ float get_theta(float angle, int quadrant) {
   return theta;
 }
 
-int get_x_dist(float theta, int dist) {
-  return cos(theta) / dist;
+int Mapmaking::get_x_dist(float theta, int dist) {
+  float out = cos(theta) / dist;
+  return (int) out;
 }
 
-int get_y_dist(float theta, int dist) {
-  return sin(theta) / dist;
+int Mapmaking::get_y_dist(float theta, int dist) {
+  float out = sin(theta) / dist;
+  return (int) out;
 }
 
-int x_for_quad(int x, int quad) {
+int Mapmaking::x_for_quad(int x, int quad) {
   int out = 0;
   if ((quad == 1) || (quad == 3)) {
     out = -x;
@@ -119,7 +121,7 @@ int x_for_quad(int x, int quad) {
   return out;
 }
 
-int y_for_quad(int y, int quad) {
+int Mapmaking::y_for_quad(int y, int quad) {
   int out = 0;
   if ((quad == 3) || (quad == 4)) {
     out = -y;
@@ -130,32 +132,36 @@ int y_for_quad(int y, int quad) {
   return out;
 }
 
-void update_map(int x, int y, int pos_x, int pos_y) {
-  int grid_x = round((x + curr_robot_x)/5);
-  int grid_y = round((y + curr_robot_y)/5);
+void Mapmaking::update_map(int x, int y, int pos_x, int pos_y) {
+  int grid_x = round((x + curr_robot_x) / 5);
+  int grid_y = round((y + curr_robot_y) / 5);
 
   if (mapgrid[grid_x][grid_y] != 0) {
     mapgrid[grid_x][grid_y] = 1;
   }
 }
 
-void print_spaces(){
-  Serial.print(mapgrid[88][88] + mapgrid[88][89] + mapgrid[88][90] + mapgrid[88][91] + mapgrid[88][92] + mapgrid[88][93] + mapgrid[88][94]);
-  Serial.print(mapgrid[89][88] + mapgrid[89][89] + mapgrid[89][90] + mapgrid[89][91] + mapgrid[89][92] + mapgrid[89][93] + mapgrid[89][94]);
-  Serial.print(mapgrid[90][88] + mapgrid[90][89] + mapgrid[90][90] + mapgrid[90][91] + mapgrid[90][92] + mapgrid[90][93] + mapgrid[90][94]);
-  Serial.print(mapgrid[91][88] + mapgrid[91][89] + mapgrid[91][90] + mapgrid[91][91] + mapgrid[91][92] + mapgrid[91][93] + mapgrid[91][94]);
-  Serial.print(mapgrid[92][88] + mapgrid[92][89] + mapgrid[92][90] + mapgrid[92][91] + mapgrid[92][92] + mapgrid[92][93] + mapgrid[92][94]);
-  Serial.print(mapgrid[93][88] + mapgrid[93][89] + mapgrid[93][90] + mapgrid[93][91] + mapgrid[93][92] + mapgrid[93][93] + mapgrid[93][94]);
-  Serial.print(mapgrid[94][88] + mapgrid[94][89] + mapgrid[94][90] + mapgrid[94][91] + mapgrid[94][92] + mapgrid[94][93] + mapgrid[94][94]);
+void Mapmaking::print_spaces() {
+  for (int i = 0; i <= 6; i++) {
+    for (int j = 0; j <= 6; j++) {
+      Serial.print(mapgrid[13 + i][13 + j]);
+      if (j != 6) {
+        Serial.print(" ");
+      }
+      else {
+        Serial.print("\n");
+      }
+    }
+  }
 }
 
 void Mapmaking::initialize() {
-  curr_robot_x = 91; // current x coordinate of the robot
-  curr_robot_y = 91; // current y coordinate of the robot
+  curr_robot_x = 16; // current x coordinate of the robot
+  curr_robot_y = 16; // current y coordinate of the robot
   curr_robot_angle = 0; //current angle of robot with respect to starting position
 
-  prev_robot_x = 91;
-  prev_robot_y = 91;
+  prev_robot_x = 16;
+  prev_robot_y = 16;
   prev_robot_angle = 0;
 }
 
@@ -164,13 +170,13 @@ void Mapmaking::advance(Control control, Sensors sensors) {
 
   prev_robot_angle = curr_robot_angle;
   curr_robot_angle = control.getAngleRotation() - prev_robot_angle;
-  if (curr_robot_angle > 180){
+  if (curr_robot_angle > 180) {
     curr_robot_angle = -180 - curr_robot_angle;
   }
-  else if (curr_robot_angle < -180){
+  else if (curr_robot_angle < -180) {
     curr_robot_angle = 180 - curr_robot_angle;
   }
-  
+
   int fwd_quad = set_quadrant(curr_robot_angle);
 
   float new_dist = control.getDistanceTravelled();
@@ -178,7 +184,7 @@ void Mapmaking::advance(Control control, Sensors sensors) {
   prev_robot_y = curr_robot_y;
   curr_robot_x = prev_robot_x + x_for_quad(get_x_dist(curr_robot_angle, new_dist), fwd_quad);
   curr_robot_y = prev_robot_y + y_for_quad(get_y_dist(curr_robot_angle, new_dist), fwd_quad);
-  
+
   int dist_fwd = sensors.getDistance(1);
   int dist_left = sensors.getDistance(0);
   int dist_right = sensors.getDistance(2);
@@ -195,7 +201,7 @@ void Mapmaking::advance(Control control, Sensors sensors) {
     if curr_angle > 180, set curr_angle = -180 - curr_angle
     if curr_angle < -180, set curr_angle = 180 - curr_angle
   */
-  
+
   int left_quad = set_quadrant(curr_robot_angle - 90);
   int right_quad = set_quadrant(curr_robot_angle + 90);
 

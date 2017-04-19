@@ -1,11 +1,13 @@
 #include "Control.h"
 #include "Sensors.h"
+#include "Mapmaking.h"
 #include "PathFinding.h"
 
 // Modules
 Control control;
 Sensors sensors;
 PathFinding pathFinding;
+Mapmaking mapmaking;
 
 // Variables
 boolean autonomous = false;
@@ -15,6 +17,7 @@ void setup(void)
   control.initialize(200);
   sensors.initialize();
   pathFinding.initialize();
+  mapmaking.initialize();
 
   Serial.begin(9600);
   Serial.println("Setup finished");
@@ -77,6 +80,10 @@ void loop(void)
       case 'U':
         autonomous = true;
         break;
+      case 'm':
+      case 'M':
+        mapmaking.advance(control, sensors);
+        mapmaking.print_spaces();
       default:
         control.stop();
         control.debug_printEncoderCount();
