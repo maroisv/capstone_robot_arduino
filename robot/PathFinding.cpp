@@ -6,8 +6,14 @@
 #include "Arduino.h"
 #include "PathFinding.h"
 
-int prevForwardDist = 0;
-int obstacles[3] = {0, 0, 0};
+#define TO_RAD (1000 / 57296)
+
+int obstacle0= 0;
+int obstacle1= 0;
+int obstacle2= 0;
+int x = 0; // x,y in cm
+int y = 0;
+int orientation = 0; // 0 - 360 deg, starts at 0.
 
 // Create the PathFinding object.
 PathFinding::PathFinding() {}
@@ -22,23 +28,74 @@ void PathFinding::initialize() {
  */
 int PathFinding::advance(Control control, Sensors sensors) {
   // Get distance from sensors.
-  prevForwardDist = obstacles[1];
-  sensors.fillDistanceArray(obstacles);
-  Serial.print(obstacles[0]);
+  obstacle0 = sensors.getDistance(0);
+  obstacle1 = sensors.getDistance(1);
+  obstacle2 = sensors.getDistance(2);
+  Serial.print(obstacle0);
   Serial.print(" ");
-  Serial.print(obstacles[1]);
+  Serial.print(obstacle1);
   Serial.print(" ");
-  Serial.println(obstacles[2]);
+  Serial.println(obstacle2);
 
   // Take the average from the two most recent forward distance.
-  if ((prevForwardDist + obstacles[1])/2 > 20) {
+  if (obstacle1 > 20) {
     // Go forward or continue to go forward.
     control.forward();
     delay(500);
-    control.stop(); // TODO: Get the distance travelled
+    updatePosition((int) control.stop()); // TODO: Get the distance travelled
   } else {
     // Turn toward the space with the most space. 
-    (obstacles[0] > obstacles[2]) ? control.turn(270) : control.turn(90); // TODO: Get the exact angle turned
+    updateOrientation( (int)
+      (obstacle0 > obstacle2) ? control.turn(270) : control.turn(90)); 
   }
+  control.resetEncoderCount();
+}
+
+int PathFinding::getPositionX() {
+  return x;
+}
+
+int PathFinding::getPositionY() {
+  return y;
+}
+
+
+int PathFinding::getOrientation() {
+  return orientation;
+}
+
+int PathFinding::getObstacle(int pos) {
+  switch(pos) {
+    case 0:
+      return obstacle0;
+      break;
+    case 1:
+      return obstacle1;
+      break;
+    case 2:
+      return obstacle2;
+      break;
+  }
+}
+
+void PathFinding::updateOrientation(int angle) {
+  Serial.print("Angle: ");
+  Serial.println(angle);
+  orientation += angle;
+}
+
+void PathFinding::updatePosition(int dist) {
+  Serial.print("Dist:");
+  Serial.println(dist);
+  
+  x = x + dist * sin(orientation * TO_RAD);
+  y = y + dist * cos(orientation * TO_RAD);
+
+  Serial.print("pos: ");
+  Serial.print(x);
+  Serial.print(",");
+  Serial.print(y);
+  Serial.print(" orient:");
+  Serial.println(orientation);
 }
 

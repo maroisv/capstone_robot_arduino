@@ -77,8 +77,22 @@ void loop(void)
       case 'U':
         autonomous = true;
         break;
+      case 'm': // Go autonomous
+      case 'M':
+        Serial.print(pathFinding.getPositionX());
+        Serial.print(',');
+        Serial.print(pathFinding.getPositionY());
+        Serial.print(',');
+        Serial.print(pathFinding.getOrientation());
+        Serial.print(',');
+        Serial.print(pathFinding.getObstacle(0));
+        Serial.print(',');
+        Serial.print(pathFinding.getObstacle(1));
+        Serial.print(',');
+        Serial.println(pathFinding.getObstacle(2));
+        break;
       default:
-        control.stop();
+        Serial.println(control.stop());
         control.debug_printEncoderCount();
         control.resetEncoderCount();
         autonomous = false;
