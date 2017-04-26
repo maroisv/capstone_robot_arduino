@@ -19,7 +19,7 @@
 #define gearRatio 207.0 // Output rotation per motor rotation
 #define encoderRatio 3.0 // Count per motor rotation
 #define distPerRot 11.0 // in cm
-#define robotTurnCirc 33.3 // Robot turn circonference in cm
+#define robotTurnCirc 35.5 // Robot turn circonference in cm
 
 // Magnetic Transducer
 #define pin_transducer 12
@@ -38,7 +38,7 @@
 #define momDelay 200
 
 // PD control
-#define P 3
+#define P 2
 #define D 1
 #define UPDATE_DELAY 100
 
