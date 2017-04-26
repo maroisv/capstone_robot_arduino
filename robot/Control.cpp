@@ -18,7 +18,7 @@
 // Ratios
 #define gearRatio 207.0 // Output rotation per motor rotation
 #define encoderRatio 3.0 // Count per motor rotation
-#define distPerRot 11.5 // in cm
+#define distPerRot 11.0 // in cm
 #define robotTurnCirc 33.3 // Robot turn circonference in cm
 
 // Magnetic Transducer
@@ -38,8 +38,8 @@
 #define momDelay 200
 
 // PD control
-#define P 2
-#define D 0.2
+#define P 3
+#define D 1
 #define UPDATE_DELAY 100
 
 int _speed;
@@ -345,11 +345,16 @@ float Control::getAngleRotation() {
  */
 void Control::correctSpeed(int timeDiff) {
   // Calculate change to apply
-  int diff = _encoderCountRight - _encoderCountLeft;
+  int diff = 1.05 * _encoderCountRight - _encoderCountLeft;
   int change = diff * P + (diff - oldDiff) / float(timeDiff) * D;
 
   // Apply change
-  (diff > 0) ? _speedR -= change : _speedL += change;
+  if (_speed > 150) {
+    (diff > 0) ? _speedR -= change : _speedL -= change;
+  } else {
+    (diff > 0) ? _speedL += change : _speedR += change;
+  }
+  
 
   // Ensure it respect the limit
   if (_speedR < MIN_SPEED) _speedR = MIN_SPEED;
