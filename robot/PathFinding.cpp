@@ -6,8 +6,6 @@
 #include "Arduino.h"
 #include "PathFinding.h"
 
-#define TO_RAD (1000 / 57296)
-
 int obstacle0= 0;
 int obstacle1= 0;
 int obstacle2= 0;
@@ -82,8 +80,8 @@ void PathFinding::updateOrientation(int angle) {
 void PathFinding::updatePosition(int dist) {
   dist = dist - prevDist;
   prevDist += dist;
-  
-  x = x + dist * sin(orientation * TO_RAD);
-  y = y + dist * cos(orientation * TO_RAD);
+
+  x = x + dist * sin(orientation * 1000.0 / 57296);
+  y = y + dist * cos(orientation * 1000.0 / 57296);
 }
 
