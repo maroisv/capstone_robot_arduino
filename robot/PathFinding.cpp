@@ -14,6 +14,7 @@ int obstacle2= 0;
 int x = 0; // x,y in cm
 int y = 0;
 int orientation = 0; // 0 - 360 deg, starts at 0.
+int prevDist = 0;
 
 // Create the PathFinding object.
 PathFinding::PathFinding() {}
@@ -31,14 +32,9 @@ int PathFinding::advance(Control control, Sensors sensors) {
   obstacle0 = sensors.getDistance(0);
   obstacle1 = sensors.getDistance(1);
   obstacle2 = sensors.getDistance(2);
-  Serial.print(obstacle0);
-  Serial.print(" ");
-  Serial.print(obstacle1);
-  Serial.print(" ");
-  Serial.println(obstacle2);
 
   // Take the average from the two most recent forward distance.
-  if (obstacle1 > 20) {
+  if (obstacle1 > 25) {
     // Go forward or continue to go forward.
     control.forward();
     delay(500);
@@ -47,8 +43,8 @@ int PathFinding::advance(Control control, Sensors sensors) {
     // Turn toward the space with the most space. 
     updateOrientation( (int)
       (obstacle0 > obstacle2) ? control.turn(270) : control.turn(90)); 
+    prevDist = 0;
   }
-  control.resetEncoderCount();
 }
 
 int PathFinding::getPositionX() {
@@ -79,23 +75,15 @@ int PathFinding::getObstacle(int pos) {
 }
 
 void PathFinding::updateOrientation(int angle) {
-  Serial.print("Angle: ");
-  Serial.println(angle);
   orientation += angle;
+  orientation = orientation%360;
 }
 
 void PathFinding::updatePosition(int dist) {
-  Serial.print("Dist:");
-  Serial.println(dist);
+  dist = dist - prevDist;
+  prevDist += dist;
   
   x = x + dist * sin(orientation * TO_RAD);
   y = y + dist * cos(orientation * TO_RAD);
-
-  Serial.print("pos: ");
-  Serial.print(x);
-  Serial.print(",");
-  Serial.print(y);
-  Serial.print(" orient:");
-  Serial.println(orientation);
 }
 
