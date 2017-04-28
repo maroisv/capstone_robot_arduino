@@ -5,6 +5,7 @@
 #include "Arduino.h"
 #include "Control.h"
 
+#define correction 1.12
 // Motor control
 #define pin_speed_1 6
 #define pin_speed_2 5
@@ -19,15 +20,15 @@
 #define gearRatio 207.0 // Output rotation per motor rotation
 #define encoderRatio 3.0 // Count per motor rotation
 #define distPerRot 11.0 // in cm
-#define robotTurnCirc 35.5 // Robot turn circonference in cm
+#define robotTurnCirc 38 // Robot turn circonference in cm
 
 // Magnetic Transducer
 #define pin_transducer 12
 #define microPeriod 800
 
 // Speed constants
-#define MAX_SPEED 255
-#define MIN_SPEED 130
+#define MAX_SPEED 240
+#define MIN_SPEED 150
 
 /**
  * Momemtum delay
@@ -102,7 +103,6 @@ void Control::forward() {
   digitalWrite(pin_dir_1,LOW);
   analogWrite(pin_speed_2,_speedR);
   digitalWrite(pin_dir_2,LOW);
-  Serial.println("forward");
 }
 
 /**
@@ -126,11 +126,10 @@ float Control::forward(int distance)
   
   while (diff > 0.2) {
     // Set speed
-    setSpeed(prevSpeed * diff * 0.1);
+    setSpeed(prevSpeed * diff * 0.05);
     correctSpeed(UPDATE_DELAY);
 
-    debug_printEncoderSpeedInfo();
-
+    // debug_printEncoderSpeedInfo();
     // Go forward
     forward();
     
@@ -148,9 +147,7 @@ float Control::forward(int distance)
   setSpeed(prevSpeed);
 
   // Print final rotation angle and reset encoder count.
-  Serial.print("Distance: ");
   float dist = getDistanceTravelled();
-  Serial.println(dist);
   resetEncoderCount();
   return dist;
 }
@@ -164,7 +161,6 @@ void Control::reverse()
   digitalWrite(pin_dir_1,HIGH);
   analogWrite(pin_speed_2,_speed);
   digitalWrite(pin_dir_2,HIGH);
-  Serial.println("reverse");
 }
 
 /**
@@ -176,7 +172,6 @@ void Control::left ()
   digitalWrite(pin_dir_1,HIGH);
   analogWrite(pin_speed_2,_speed);
   digitalWrite(pin_dir_2,LOW);
-  Serial.println("left");
 }
 
 /**
@@ -188,7 +183,6 @@ void Control::right()
   digitalWrite(pin_dir_1,LOW);
   analogWrite(pin_speed_2,_speed);
   digitalWrite(pin_dir_2,HIGH);
-  Serial.println("right");
 }
 
 /**
@@ -218,12 +212,10 @@ float Control::turn(int angleToRot) {
   
   while (diff > 2) {
     // Set speed
-    setSpeed(prevSpeed * 0.02 * diff);
+    setSpeed(prevSpeed * 0.005 * diff);
     correctSpeed(UPDATE_DELAY);
-    Serial.print("diff=");
-    Serial.println(diff);
-    debug_printEncoderSpeedInfo();
-    
+
+    // debug_printEncoderSpeedInfo();
     // Start turning
     (turnRight) ? right() : left();
 
@@ -241,10 +233,8 @@ float Control::turn(int angleToRot) {
   setSpeed(prevSpeed);
 
   // Print final rotation angle and reset encoder count.
-  Serial.print("Rotation: ");
   float angle = getAngleRotation();
   (turnRight) ? angle = angle : angle = 360 - angle;
-  Serial.println(angle);
   resetEncoderCount();
   return angle;
 }
@@ -261,8 +251,7 @@ float Control::stop()
 {
   digitalWrite(pin_speed_1,LOW);
   digitalWrite(pin_speed_2,LOW);
-  
-  Serial.println("stop");
+
   return getDistanceTravelled();
 }
 
@@ -316,7 +305,7 @@ float Control::getTrackDistance(int num) {
     return distPerRot * _encoderCountLeft / (gearRatio * encoderRatio);
   } else {
     // Right track
-    return distPerRot * _encoderCountRight / (gearRatio * encoderRatio);
+    return distPerRot * correction * _encoderCountRight / (gearRatio * encoderRatio);
   }
 }
 
@@ -345,22 +334,23 @@ float Control::getAngleRotation() {
  */
 void Control::correctSpeed(int timeDiff) {
   // Calculate change to apply
-  int diff = 1.05 * _encoderCountRight - _encoderCountLeft;
-  int change = diff * P + (diff - oldDiff) / float(timeDiff) * D;
+  int diff = correction * _encoderCountRight - _encoderCountLeft;
+  int change = abs(diff * P + (diff - oldDiff) / float(timeDiff) * D);
 
   // Apply change
-  if (_speed > 150) {
-    (diff > 0) ? _speedR -= change : _speedL -= change;
+  if (_speed > 200) {
+    (diff > 0) ? _speedR = _speed - change : _speedL = _speed - change;
   } else {
-    (diff > 0) ? _speedL += change : _speedR += change;
+    (diff > 0) ? _speedL = _speed + change : _speedR = _speed + change;
   }
   
 
   // Ensure it respect the limit
   if (_speedR < MIN_SPEED) _speedR = MIN_SPEED;
   if (_speedL < MIN_SPEED) _speedL = MIN_SPEED;
+  if (_speedR > MAX_SPEED) _speedR = MAX_SPEED;
+  if (_speedL > MAX_SPEED) _speedL = MAX_SPEED;
   
-
   oldDiff = diff;
 }
 

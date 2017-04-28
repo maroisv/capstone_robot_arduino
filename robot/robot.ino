@@ -9,6 +9,7 @@ PathFinding pathFinding;
 
 // Variables
 boolean autonomous = false;
+boolean backtracking = false;
 
 void setup(void)
 {
@@ -28,11 +29,11 @@ void loop(void)
     {
       case 'f'://Move Forward
       case 'F':
-        control.forward(100);
+        Serial.println(control.forward(50));
         break;
       case 'r'://Move Backwards
       case 'R':
-        control.turn(180);
+        Serial.println(control.turn(180));
         break;
       case 'w'://Move Forward
       case 'W':
@@ -77,7 +78,11 @@ void loop(void)
       case 'U':
         autonomous = true;
         break;
-      case 'm': // Go autonomous
+      case 'P': // Backtrack
+      case 'p':
+        backtracking = true;
+        break;
+      case 'm': // Send coordinates data
       case 'M':
         Serial.print(pathFinding.getPositionX());
         Serial.print(',');
@@ -92,8 +97,6 @@ void loop(void)
         Serial.println(pathFinding.getObstacle(2));
         break;
       default:
-        Serial.println(control.stop());
-        control.debug_printEncoderCount();
         control.resetEncoderCount();
         autonomous = false;
         break;
@@ -102,6 +105,8 @@ void loop(void)
 
   if (autonomous) {
     pathFinding.advance(control, sensors);
+  } else if (backtracking) {
+    pathFinding.backtrack(control, sensors);
   }
 }
 
